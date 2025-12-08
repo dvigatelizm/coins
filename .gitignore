@@ -1,0 +1,71 @@
+# -----------------------------
+# Visual Studio garbage
+# -----------------------------
+.vs/
+*.user
+*.suo
+*.opensdf
+*.sdf
+*.ipch
+
+# -----------------------------
+# Build directories (VS/CMake)
+# -----------------------------
+/Debug/
+/Release/
+/x64/
+/x86/
+/out/
+/build/
+/bin/
+/obj/
+
+# CLion / Other IDEs
+/.idea/
+
+# -----------------------------
+# CMake internal files
+# -----------------------------
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+install_manifest.txt
+
+# -----------------------------
+# Compiled binaries
+# -----------------------------
+*.exe
+*.dll
+*.lib
+*.pdb
+*.obj
+
+# -----------------------------
+# Logs and temporary files
+# -----------------------------
+*.log
+*.tmp
+
+# -----------------------------
+# Python / Jupyter left-overs
+# -----------------------------
+*.ipynb_checkpoints/
+__pycache__/
+*.pyc
+
+# -----------------------------
+# System-specific trash
+# -----------------------------
+.DS_Store
+Thumbs.db
+
+# -----------------------------
+# Visual artifacts
+# -----------------------------
+*.png
+*.jpg
+!important: keep data images:
+!data/img1.jpg
+!data/img2.jpg
+!data/img3.jpg
