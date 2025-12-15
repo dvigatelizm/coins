@@ -36,6 +36,24 @@ void draw_and_save(const cv::Mat& img, const std::vector<DetectedCircle>& dets, 
     cv::imwrite(outpath, vis);
 }
 
+void save_detections_txt(const std::vector<DetectedCircle>& dets, const std::string& imgpath) {
+    fs::path p(imgpath);
+    fs::path txtPath = p.parent_path() / (p.stem().string() + "_detected.txt"); // сохраняем в той же папке
+    std::ofstream out(txtPath.string());
+    if (!out.is_open()) {
+        std::cerr << "Cannot open file for writing: " << txtPath << "\n";
+        return;
+    }
+    out << "Detected circles: " << dets.size() << "\n";
+    for (size_t i = 0; i < dets.size(); ++i) {
+        out << i << ": cx=" << dets[i].center.x
+            << " cy=" << dets[i].center.y
+            << " r=" << dets[i].radius << "\n";
+    }
+    out.close();
+    std::cout << "Saved detections to " << txtPath << "\n";
+}
+
 int main(int argc, char** argv) {
     if (argc < 2) {
         std::cout << "Usage: coin_detector <image> [gt_file(optional)]\n";
@@ -79,8 +97,11 @@ int main(int argc, char** argv) {
         }
 
         // save visualization
-        std::string outpath = fs::path(arg).stem().string() + "_detected.png";
-        draw_and_save(img, dets, outpath);
+        //std::string outpath = fs::path(arg).stem().string() + "_detected.png";
+        //draw_and_save(img, dets, outpath);
+        fs::path outpath = fs::path(arg).parent_path() / (fs::path(arg).stem().string() + "_detected.png");
+        draw_and_save(img, dets, outpath.string());
+        save_detections_txt(dets, arg);
         std::cout << "Saved visualization to " << outpath << "\n";
     }
     else {
@@ -113,8 +134,12 @@ int main(int argc, char** argv) {
                 totalTP += res.TP; totalFP += res.FP; totalFN += res.FN; count++;
                 std::cout << "  TP=" << res.TP << " FP=" << res.FP << " FN=" << res.FN << "\n";
             }
-            std::string outpath = fs::path(imgpath).stem().string() + "_detected.png";
-            draw_and_save(img, dets, outpath);
+            //std::string outpath = fs::path(imgpath).stem().string() + "_detected.png";
+            //draw_and_save(img, dets, outpath);
+            //save_detections_txt(dets, arg);
+            fs::path outpath = fs::path(imgpath).parent_path() / (fs::path(imgpath).stem().string() + "_detected.png");
+            draw_and_save(img, dets, outpath.string());
+            save_detections_txt(dets, imgpath); // внутри save_detections_txt уже используется родительская папка
         }
         if (count > 0) {
             double precision = totalTP + totalFP ? double(totalTP) / double(totalTP + totalFP) : 0.0;
