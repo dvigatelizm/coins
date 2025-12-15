@@ -15,3 +15,5 @@ add_executable(coin_detector
 )
 
 target_link_libraries(coin_detector ${OpenCV_LIBS})
+
+add_subdirectory(tools/label_editor_wx)
