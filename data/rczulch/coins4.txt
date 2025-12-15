@@ -1,0 +1,11 @@
+x=765 y=592 radius=91
+x=324 y=587 radius=122
+x=555 y=585 radius=109
+x=306 y=166 radius=133
+x=1009 y=416 radius=95
+x=758 y=396 radius=102
+x=543 y=381 radius=107
+x=944 y=591 radius=83
+x=589 y=160 radius=144
+x=915 y=161 radius=178
+x=311 y=385 radius=123

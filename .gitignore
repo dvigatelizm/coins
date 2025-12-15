@@ -1,5 +1,5 @@
 # -----------------------------
-# Visual Studio garbage
+# Visual Studio
 # -----------------------------
 .vs/
 *.user
@@ -59,13 +59,13 @@ __pycache__/
 # -----------------------------
 .DS_Store
 Thumbs.db
+__MACOSX/
+._*
 
 # -----------------------------
-# Visual artifacts
+# Data images (keep your dataset)
 # -----------------------------
-*.png
+# Игнорируем все jpg/png в проекте, кроме данных в папке data/
 *.jpg
-!important: keep data images:
-!data/img1.jpg
-!data/img2.jpg
-!data/img3.jpg
+*.png
+!data/
