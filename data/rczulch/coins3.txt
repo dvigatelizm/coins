@@ -1,0 +1,13 @@
+x=1014 y=574 radius=150
+x=275 y=578 radius=139
+x=640 y=359 radius=137
+x=146 y=359 radius=135
+x=1135 y=142 radius=139
+x=643 y=579 radius=144
+x=1135 y=367 radius=136
+x=401 y=359 radius=132
+x=886 y=139 radius=141
+x=883 y=364 radius=140
+x=145 y=140 radius=136
+x=640 y=141 radius=138
+x=394 y=138 radius=135
