@@ -1,19 +1,39 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.21)
+
 project(label_editor_wx LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-find_package(wxWidgets REQUIRED COMPONENTS core base)
-include(${wxWidgets_USE_FILE})
-
-add_executable(label_editor
+add_executable(label_editor_wx
     main.cpp
     MainFrame.cpp
     Canvas.cpp
     LabelIO.cpp
 )
 
-target_include_directories(label_editor PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(label_editor_wx PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)
 
-target_link_libraries(label_editor PRIVATE ${wxWidgets_LIBRARIES})
+find_package(NanoSVG CONFIG REQUIRED)
+find_package(wxWidgets CONFIG REQUIRED)
+
+find_package(OpenCV CONFIG REQUIRED)
+
+target_link_libraries(label_editor_wx PRIVATE
+    wx::core
+    wx::base
+    wx::aui
+    wx::html
+    opencv_core
+    opencv_imgcodecs
+    opencv_highgui
+)
+
+set_target_properties(label_editor_wx PROPERTIES
+    CXX_STANDARD 20
+    CXX_STANDARD_REQUIRED ON
+    WIN32_EXECUTABLE TRUE
+)
+
+install(TARGETS label_editor_wx
+    RUNTIME DESTINATION bin
+)

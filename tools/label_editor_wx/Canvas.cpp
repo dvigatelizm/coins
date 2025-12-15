@@ -50,8 +50,7 @@ bool Canvas::LoadOrCreateLabelsForImage() {
 
 bool Canvas::SaveLabels() {
     if (labelsPath_.empty()) return false;
-    bool ok = SaveLabels(labelsPath_, circles_);
-    return ok;
+    return ::SaveLabels(labelsPath_, circles_);
 }
 
 double Canvas::Dist(double x1, double y1, double x2, double y2) const {
