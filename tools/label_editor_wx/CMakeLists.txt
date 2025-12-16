@@ -1,3 +1,5 @@
+# tools\label_editor_wx\
+
 cmake_minimum_required(VERSION 3.21)
 
 project(label_editor_wx LANGUAGES CXX)

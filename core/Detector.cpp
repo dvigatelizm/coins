@@ -1,6 +1,7 @@
 #include "Detector.hpp"
 #include "../include/coin_detector.hpp"
-#include <opencv2/imgproc.hpp>
+
+Detector::Detector() = default;
 
 std::vector<Detection> Detector::run(const cv::Mat& image) {
     std::vector<Detection> out;
@@ -13,7 +14,7 @@ std::vector<Detection> Detector::run(const cv::Mat& image) {
     else
         gray = image;
 
-    CoinDetector detector;              // использует Params из coin_detector.hpp
+    CoinDetector detector;
     auto circles = detector.detect(gray);
 
     for (const auto& c : circles) {
@@ -25,8 +26,9 @@ std::vector<Detection> Detector::run(const cv::Mat& image) {
             int(2 * c.radius)
         );
         d.class_id = 0;
-        d.confidence = c.score;         // score из CoinDetector
+        d.confidence = c.score;
         out.push_back(d);
     }
+
     return out;
 }
