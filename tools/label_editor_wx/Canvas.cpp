@@ -50,6 +50,11 @@ bool Canvas::LoadImage(const std::string& imgPath) {
         hasImage_ = false;
         return false;
     }
+    
+    // сброс детекций при смене изображения
+    detected_.clear();
+    showDetections_ = false;
+
     bitmap_ = wxBitmap(image_);
     hasImage_ = true;
 
@@ -133,7 +138,7 @@ void Canvas::OnPaint(wxPaintEvent&) {
     if (showDetections_) {
         wxPen detPen(
             wxColour(50, 100, 255), // насыщенный синий
-            1,                      // тоньше ручной
+            5,                      // тоньше ручной
             wxPENSTYLE_SHORT_DASH   // пунктир
         );
 
@@ -151,11 +156,11 @@ void Canvas::OnPaint(wxPaintEvent&) {
             );
 
             // confidence (по желанию, но очень полезно)
-            dc.DrawText(
+            /*dc.DrawText(
                 wxString::Format("score=%.2f", d.confidence),
                 (int)std::round(d.cx + d.r + 2),
                 (int)std::round(d.cy)
-            );
+            );*/
         }
     }
 }
