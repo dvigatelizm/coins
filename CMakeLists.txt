@@ -8,10 +8,12 @@ find_package(OpenCV CONFIG REQUIRED)
 
 add_library(core
     core/Detector.cpp
+    src/coin_detector.cpp
 )
 
 target_include_directories(core PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/core
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
 target_link_libraries(core PUBLIC
