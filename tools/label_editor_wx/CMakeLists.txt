@@ -9,6 +9,7 @@ add_executable(label_editor_wx
     MainFrame.cpp
     Canvas.cpp
     LabelIO.cpp
+    ../../src/evaluator.cpp
 )
 
 target_include_directories(label_editor_wx PRIVATE

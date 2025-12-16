@@ -25,7 +25,10 @@ public:
     // match_tol: maximum center distance (in pixels) to be considered a match
     // radius_tol: relative tolerance (fraction) for radius difference (e.g. 0.3 => 30%)
     Evaluator(float match_tol = 20.0f, float radius_tol = 0.4f);
-    EvalResult evaluate(const std::vector<DetectedCircle>& dets, const std::vector<GTCircle>& gts) const;
+    EvalResult evaluate(
+        const std::vector<DetectedCircle>& dets, 
+        const std::vector<GTCircle>& gts
+    ) const;
 
 private:
     float match_tol_;

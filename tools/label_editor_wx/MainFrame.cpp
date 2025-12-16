@@ -1,6 +1,7 @@
 #include "MainFrame.hpp"
 #include <wx/filedlg.h>
 #include "Detector.hpp"
+#include "evaluator.hpp"
 
 wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
 EVT_MENU(ID_Open, MainFrame::OnOpen)
@@ -96,13 +97,54 @@ void MainFrame::OnDetect(wxCommandEvent&) {
         circles.push_back(c);
     }
 
+    // ===== 3.5 ОЦЕНКА КАЧЕСТВА =====
+    Evaluator eval;
+
+    // детекции (уже есть)
+    std::vector<DetectedCircle> detectedEval;
+    detectedEval.reserve(circles.size());
+
+    for (const auto& c : circles) {
+        DetectedCircle dc;
+        dc.center = cv::Point2f(c.cx, c.cy);
+        dc.radius = c.r;
+        dc.score = 1.0f; // или d.confidence, если хочешь
+        detectedEval.push_back(dc);
+    }
+
+    // ground truth
+    const auto& gtCircles = canvas_->GetGroundTruthCircles();
+
+    std::vector<GTCircle> gtEval;
+    gtEval.reserve(gtCircles.size());
+
+    for (const auto& c : gtCircles) {
+        GTCircle gt;
+        gt.center = cv::Point2f(c.cx, c.cy);
+        gt.radius = static_cast<float>(c.r);
+        gtEval.push_back(gt);
+    }
+
+    auto result = eval.evaluate(detectedEval, gtEval);
+
+    float precision = result.TP / float(result.TP + result.FP + 1e-6f);
+    float recall = result.TP / float(result.TP + result.FN + 1e-6f);
+    float f1 = 2.0f * precision * recall / (precision + recall + 1e-6f);
+
     // 4. Передаём в Canvas
     canvas_->SetDetectedCircles(circles);
 
     // 5. Сообщение
-    wxMessageBox(
-        wxString::Format("Detector called, results: %zu", detections.size()),
-        "Info",
-        wxICON_INFORMATION
+    SetStatusText(
+        wxString::Format(
+            "Detections=%zu | TP=%d FP=%d FN=%d | P=%.2f R=%.2f F1=%.2f",
+            detections.size(),
+            result.TP,
+            result.FP,
+            result.FN,
+            precision,
+            recall,
+            f1
+        )
     );
 }

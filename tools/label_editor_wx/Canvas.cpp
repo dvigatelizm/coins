@@ -40,6 +40,10 @@ cv::Mat Canvas::GetImageMat() const {
     return matBGR.clone();
 }
 
+const std::vector<Circle>& Canvas::GetGroundTruthCircles() const {
+    return circles_;
+}
+
 bool Canvas::LoadImage(const std::string& imgPath) {
     imagePath_ = imgPath;
     if (!image_.LoadFile(imgPath)) {
@@ -111,11 +115,6 @@ void Canvas::OnPaint(wxPaintEvent&) {
     wxPen penRed(*wxRED, 2);
     wxPen penGreen(*wxGREEN, 2);
 
-    /*static_assert(std::is_same_v<
-        std::decay_t<decltype(detected_)::value_type>,
-        Detection
-    >);*/
-
     // ручная разметка
     for (size_t i = 0; i < circles_.size(); ++i) {
         const auto& c = circles_[i];
@@ -152,11 +151,11 @@ void Canvas::OnPaint(wxPaintEvent&) {
             );
 
             // confidence (по желанию, но очень полезно)
-            /*dc.DrawText(
-                wxString::Format("%.2f", d.confidence),
+            dc.DrawText(
+                wxString::Format("score=%.2f", d.confidence),
                 (int)std::round(d.cx + d.r + 2),
                 (int)std::round(d.cy)
-            );*/
+            );
         }
     }
 }

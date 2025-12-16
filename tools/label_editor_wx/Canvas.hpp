@@ -20,6 +20,7 @@ public:
     const std::string& GetLabelsPath() const { return labelsPath_; }
 
     cv::Mat GetImageMat() const;
+    const std::vector<Circle>& GetGroundTruthCircles() const;
     void SetDetectedCircles(const std::vector<Circle>& circles);
 
 private:
@@ -43,7 +44,7 @@ private:
     std::string labelsPath_;
     std::vector<Circle> circles_;
     std::vector<Circle> detected_;
-    bool showDetections_ = false;
+    bool showDetections_ = true;
 
     int active_ = -1;
     enum class DragMode { None, MoveCenter, ResizeRadius };
