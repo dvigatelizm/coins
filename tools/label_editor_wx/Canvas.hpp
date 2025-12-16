@@ -4,6 +4,8 @@
 #include <vector>
 #include <string>
 #include "LabelIO.hpp"
+#include <opencv2/core.hpp>
+#include "Detector.hpp"
 
 class Canvas : public wxPanel {
 public:
@@ -16,6 +18,9 @@ public:
     void SetLabelsPath(const std::string& path) { labelsPath_ = path; }
     const std::string& GetImagePath() const { return imagePath_; }
     const std::string& GetLabelsPath() const { return labelsPath_; }
+
+    cv::Mat GetImageMat() const;
+    void SetDetectedCircles(const std::vector<Circle>& circles);
 
 private:
     void OnPaint(wxPaintEvent& evt);
@@ -37,6 +42,8 @@ private:
     std::string imagePath_;
     std::string labelsPath_;
     std::vector<Circle> circles_;
+    std::vector<Circle> detected_;
+    bool showDetections_ = false;
 
     int active_ = -1;
     enum class DragMode { None, MoveCenter, ResizeRadius };

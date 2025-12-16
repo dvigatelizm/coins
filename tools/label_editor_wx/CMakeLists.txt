@@ -37,3 +37,5 @@ set_target_properties(label_editor_wx PROPERTIES
 install(TARGETS label_editor_wx
     RUNTIME DESTINATION bin
 )
+
+target_link_libraries(label_editor_wx PRIVATE core)

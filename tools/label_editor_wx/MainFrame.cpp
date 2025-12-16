@@ -1,14 +1,11 @@
 #include "MainFrame.hpp"
 #include <wx/filedlg.h>
-
-enum {
-    ID_Open = wxID_HIGHEST + 1,
-    ID_Save
-};
+#include "Detector.hpp"
 
 wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
 EVT_MENU(ID_Open, MainFrame::OnOpen)
 EVT_MENU(ID_Save, MainFrame::OnSave)
+EVT_MENU(ID_Detect, MainFrame::OnDetect)
 EVT_MENU(wxID_EXIT, MainFrame::OnExit)
 wxEND_EVENT_TABLE()
 
@@ -22,8 +19,12 @@ MainFrame::MainFrame()
     fileMenu->AppendSeparator();
     fileMenu->Append(wxID_EXIT, "E&xit");
 
+    wxMenu* toolsMenu = new wxMenu();
+    toolsMenu->Append(ID_Detect, "&Detect\tCtrl+D");
+
     wxMenuBar* menuBar = new wxMenuBar();
     menuBar->Append(fileMenu, "&File");
+    menuBar->Append(toolsMenu, "&Tools");
     SetMenuBar(menuBar);
 
     CreateStatusBar();
@@ -69,4 +70,39 @@ void MainFrame::OnSave(wxCommandEvent&) {
 
 void MainFrame::OnExit(wxCommandEvent&) {
     Close(true);
+}
+
+void MainFrame::OnDetect(wxCommandEvent&) {
+    if (!canvas_) return;
+
+    // 1. Берём изображение из Canvas
+    cv::Mat img = canvas_->GetImageMat();
+    if (img.empty()) {
+        wxMessageBox("No image loaded", "Error", wxICON_ERROR);
+        return;
+    }
+
+    // 2. Запускаем детектор
+    Detector detector;
+    auto detections = detector.run(img);
+
+    // 3. Преобразуем Detection -> Circle
+    std::vector<Circle> circles;
+    for (const auto& d : detections) {
+        Circle c;
+        c.cx = d.bbox.x + d.bbox.width * 0.5;
+        c.cy = d.bbox.y + d.bbox.height * 0.5;
+        c.r = 0.5 * std::min(d.bbox.width, d.bbox.height);
+        circles.push_back(c);
+    }
+
+    // 4. Передаём в Canvas
+    canvas_->SetDetectedCircles(circles);
+
+    // 5. Сообщение
+    wxMessageBox(
+        wxString::Format("Detector called, results: %zu", detections.size()),
+        "Info",
+        wxICON_INFORMATION
+    );
 }

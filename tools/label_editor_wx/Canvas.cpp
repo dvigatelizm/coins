@@ -1,4 +1,5 @@
 #include "Canvas.hpp"
+#include <opencv2/imgproc.hpp>
 #include <filesystem>
 #include <cmath>
 
@@ -18,6 +19,25 @@ Canvas::Canvas(wxWindow* parent)
         wxFULL_REPAINT_ON_RESIZE | wxBORDER_SIMPLE) {
     SetBackgroundStyle(wxBG_STYLE_PAINT);
     SetFocus(); // чтобы ловить клавиши (Del, S и т.п.)
+}
+
+cv::Mat Canvas::GetImageMat() const {
+    if (!hasImage_)
+        return cv::Mat();
+
+    wxImage img = image_;
+
+    cv::Mat mat(
+        img.GetHeight(),
+        img.GetWidth(),
+        CV_8UC3,
+        img.GetData()
+    );
+
+    cv::Mat matBGR;
+    cv::cvtColor(mat, matBGR, cv::COLOR_RGB2BGR);
+
+    return matBGR.clone();
 }
 
 bool Canvas::LoadImage(const std::string& imgPath) {
@@ -91,6 +111,12 @@ void Canvas::OnPaint(wxPaintEvent&) {
     wxPen penRed(*wxRED, 2);
     wxPen penGreen(*wxGREEN, 2);
 
+    /*static_assert(std::is_same_v<
+        std::decay_t<decltype(detected_)::value_type>,
+        Detection
+    >);*/
+
+    // ручная разметка
     for (size_t i = 0; i < circles_.size(); ++i) {
         const auto& c = circles_[i];
         dc.SetPen((int)i == active_ ? penGreen : penRed);
@@ -102,6 +128,36 @@ void Canvas::OnPaint(wxPaintEvent&) {
         dc.SetPen(*wxTRANSPARENT_PEN);
         dc.SetBrush((int)i == active_ ? *wxGREEN_BRUSH : *wxBLUE_BRUSH);
         dc.DrawCircle(wxPoint((int)std::round(c.cx), (int)std::round(c.cy)), 3);
+    }
+
+    // ===== Детекция (синие пунктирные окружности) =====
+    if (showDetections_) {
+        wxPen detPen(
+            wxColour(50, 100, 255), // насыщенный синий
+            1,                      // тоньше ручной
+            wxPENSTYLE_SHORT_DASH   // пунктир
+        );
+
+        dc.SetPen(detPen);
+        dc.SetBrush(*wxTRANSPARENT_BRUSH);
+
+        for (const auto& d : detected_) {
+            // рисуем окружность детекции
+            dc.DrawCircle(
+                wxPoint(
+                    (int)std::round(d.cx),
+                    (int)std::round(d.cy)
+                ),
+                (int)std::round(d.r)
+            );
+
+            // confidence (по желанию, но очень полезно)
+            /*dc.DrawText(
+                wxString::Format("%.2f", d.confidence),
+                (int)std::round(d.cx + d.r + 2),
+                (int)std::round(d.cy)
+            );*/
+        }
     }
 }
 
@@ -176,4 +232,10 @@ void Canvas::OnKeyDown(wxKeyEvent& evt) {
     }
 
     evt.Skip();
+}
+
+void Canvas::SetDetectedCircles(const std::vector<Circle>& circles) {
+    detected_ = circles;
+    showDetections_ = true;
+    Refresh();
 }
