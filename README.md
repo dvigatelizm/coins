@@ -1,14 +1,10 @@
-# coins
+## Build on Ubuntu
 
-Cross-platform C++ project using CMake, vcpkg, OpenCV and wxWidgets.
-
-## Requirements
-- CMake >= 3.21
-- vcpkg (manifest mode)
-- C++20 compiler
-- Ninja (recommended)
-
-## Build (CLI)
 ```bash
-cmake --preset x64-release
-cmake --build --preset x64-release
+sudo apt update
+sudo apt install -y cmake build-essential libopencv-dev libwxgtk3.2-dev
+
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build -j
+
+./build/tools/label_editor_wx/label_editor_wx
