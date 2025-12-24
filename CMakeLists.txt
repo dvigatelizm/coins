@@ -4,6 +4,12 @@ cmake_minimum_required(VERSION 3.21)
 
 project(coins LANGUAGES CXX)
 
+# --- NanoSVG (vendored, header-only) ---
+add_library(NanoSVG INTERFACE)
+target_include_directories(NanoSVG INTERFACE
+    ${CMAKE_CURRENT_SOURCE_DIR}/third_party/nanosvg/src
+)
+
 add_subdirectory(tools)
 
 find_package(OpenCV CONFIG REQUIRED)

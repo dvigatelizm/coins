@@ -83,3 +83,4 @@ __MACOSX/
 .DS_Store
 __MACOSX/
 ._*
+.vscode/

@@ -16,20 +16,32 @@ target_include_directories(label_editor_wx PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-find_package(NanoSVG CONFIG REQUIRED)
-find_package(wxWidgets CONFIG REQUIRED)
+# --- NanoSVG (vendored header-only) ---
+target_link_libraries(label_editor_wx PRIVATE NanoSVG)
 
-find_package(OpenCV CONFIG REQUIRED)
+# --- wxWidgets ---
+find_package(wxWidgets REQUIRED COMPONENTS core base aui html)
+include(${wxWidgets_USE_FILE})
 
-target_link_libraries(label_editor_wx PRIVATE
-    wx::core
-    wx::base
-    wx::aui
-    wx::html
-    opencv_core
-    opencv_imgcodecs
-    opencv_highgui
+target_include_directories(label_editor_wx PRIVATE
+    ${wxWidgets_INCLUDE_DIRS}
 )
+target_link_libraries(label_editor_wx PRIVATE
+    ${wxWidgets_LIBRARIES}
+)
+
+# --- OpenCV ---
+find_package(OpenCV REQUIRED COMPONENTS core imgcodecs highgui)
+
+target_include_directories(label_editor_wx PRIVATE
+    ${OpenCV_INCLUDE_DIRS}
+)
+target_link_libraries(label_editor_wx PRIVATE
+    ${OpenCV_LIBS}
+)
+
+# --- Link your internal core library ---
+target_link_libraries(label_editor_wx PRIVATE core)
 
 set_target_properties(label_editor_wx PROPERTIES
     CXX_STANDARD 20
@@ -40,5 +52,3 @@ set_target_properties(label_editor_wx PROPERTIES
 install(TARGETS label_editor_wx
     RUNTIME DESTINATION bin
 )
-
-target_link_libraries(label_editor_wx PRIVATE core)

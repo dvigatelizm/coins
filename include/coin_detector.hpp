@@ -24,7 +24,9 @@ public:
         int maxRadius = 200;
     };
 
-    CoinDetector(const Params& p = Params());
+    //CoinDetector(const Params& p = Params());
+    CoinDetector();                      // конструктор по умолчанию
+    explicit CoinDetector(const Params& p);  // конструктор с параметрами
     std::vector<DetectedCircle> detect(const cv::Mat& imgGray) const;
 
 private:

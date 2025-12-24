@@ -3,6 +3,9 @@
 
 CoinDetector::CoinDetector(const Params& p) : params_(p) {}
 
+CoinDetector::CoinDetector()
+    : CoinDetector(Params{}) {}
+
 std::vector<DetectedCircle> CoinDetector::detect(const cv::Mat& imgGray) const {
     CV_Assert(imgGray.channels() == 1);
 
